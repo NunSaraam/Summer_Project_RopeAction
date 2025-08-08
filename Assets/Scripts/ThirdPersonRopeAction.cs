@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class RopeAction : MonoBehaviour
+public class ThirdPersonRopeAction : MonoBehaviour
 {
     public LayerMask grapplingObj = 1;          //그랩 되는 오브젝트 레이어
     public float maxGrappleDistance = 100f;     //최대 그랩 거리
@@ -15,6 +14,7 @@ public class RopeAction : MonoBehaviour
     public Vector3 grapplePoint;
 
     public Camera playerCamera;                 //플레이어 카메라 설정
+    public Transform aimPoint;                  //조준점
 
     //로프 기능 추가
     public Transform player;                    //플레이어의 Transform 참조
@@ -29,6 +29,7 @@ public class RopeAction : MonoBehaviour
     //당기기 기능 추가
     public float pullForce = 1000.0f;
     public float pullSpeed = 50f;
+
     private void Start()
     {
         playerCamera = Camera.main;             //메인 카메라를 할당 한다.
@@ -46,7 +47,6 @@ public class RopeAction : MonoBehaviour
         lineRenderer.positionCount = 0;         //처음에는 선이 없음
 
     }
-
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))        //마우스 왼쪽 버튼을 누를 경우
@@ -85,7 +85,14 @@ public class RopeAction : MonoBehaviour
 
         if (isGrappling) return;                //이미 그래플링 중이면 리턴
 
-        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f));
+        Ray ray;
+
+        //조준점이 있을 경우
+        //Vector3 aimDirection = (aimPoint.position - playerCamera.transform.position).normalized;
+        //ray = new Ray(playerCamera.transform.position, aimDirection);
+
+
+        ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2.0f));
 
         if (Physics.Raycast(ray, out hit, maxGrappleDistance, grapplingObj))
         {
